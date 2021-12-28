@@ -1,2 +1,3 @@
-# nft-utils
-Python utilities for NFT projects
+# NFT Utilities
+
+Python utilities for NFT projects.
