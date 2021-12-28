@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class NFT(BaseModel):
     image: str
-    tokenId: int
+    tokenID: int
     name: str
     attributes: Dict = {}
 
