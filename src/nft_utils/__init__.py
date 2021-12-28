@@ -1,4 +1,4 @@
-from .models import NFTModel
-from .pinning import PinataWrapper
+from .api import PinningAPI
+from .models import NFT, Pin
 
-__all__ = ["NFTModel", "PinataWrapper"]
+__all__ = ["NFT", "Pin", "PinningAPI"]
