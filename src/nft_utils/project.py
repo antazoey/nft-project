@@ -39,7 +39,7 @@ class Project:
         token_id = 0
         nft_data = []
         for cid in content_hashes:
-            nft_metadata_dict = create_nft(cid, token_id)
+            nft_metadata_dict = self.create_nft(cid, token_id)
             nft_data.append(nft_metadata_dict)
 
         return nft_data
