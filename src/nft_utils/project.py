@@ -1,5 +1,6 @@
 import json
 import shutil
+import os
 import tempfile
 from pathlib import Path
 from typing import Callable, Dict, List, Union, Optional
@@ -72,24 +73,33 @@ class Project:
         return artwork_hashes
 
     def pin_metadata(self, nft_data: List[NFT]) -> str:
-        existing_hash = self._ipfs.get_hash(self._name)
-        if existing_hash:
-            return existing_hash
+        content_hash = self._ipfs.get_hash(self._name)
+        if content_hash:
+            return content_hash
 
         # Create and pin metadat JSON files to IPFS
         with tempfile.TemporaryDirectory() as temp_dir:
-            project_path = Path(self._name)
-            shutil.rmtree(project_path, ignore_errors=True)
-            project_path.mkdir()
+            owd = os.getcwd()
 
-            for nft in nft_data:
-                metadata_file_name = self._metadata_file_pattern.format(
-                    token_id=nft.tokenID
-                )
-                if not metadata_file_name:
-                    raise MetadataFileNameError(self._metadata_file_pattern)
+            try:
+                os.chdir(temp_dir)
+                project_path = Path(self._name)
+                shutil.rmtree(project_path, ignore_errors=True)
+                project_path.mkdir()
 
-                metadata_file_path = project_path / metadata_file_name
-                metadata_file_path.write_text(json.dumps(nft.dict()))
+                for nft in nft_data:
+                    metadata_file_name = self._metadata_file_pattern.format(
+                        token_id=nft.tokenID
+                    )
+                    if not metadata_file_name:
+                        raise MetadataFileNameError(self._metadata_file_pattern)
 
-            return self._ipfs.pin_file(project_path)
+                    metadata_file_path = project_path / metadata_file_name
+                    metadata_file_path.write_text(json.dumps(nft.dict()))
+                
+                content_hash = self._ipfs.pin_file(project_path)
+
+            finally:
+                os.chdir(owd)
+
+        return content_hash
