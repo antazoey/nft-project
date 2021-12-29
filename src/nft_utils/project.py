@@ -47,8 +47,8 @@ class Project:
 
     def create_nft(self, cid: str, index: int, attributes: Dict = None) -> NFT:
         artwork_name = f"{self._name} Number {index}"
-        attributes = attributes or {}
-        nft = NFT(image=cid, tokenID=index, name=artwork_name, attributes=attributes)
+        attributes = attributes or []
+        nft = NFT(image=cid, tokenId=index, name=artwork_name, attributes=attributes)
 
         if self._nft_data_modifier:
             nft = self._nft_data_modifier(nft)
@@ -89,7 +89,7 @@ class Project:
 
                 for nft in nft_data:
                     metadata_file_name = self._metadata_file_pattern.format(
-                        token_id=nft.tokenID
+                        token_id=nft.tokenId
                     )
                     if not metadata_file_name:
                         raise MetadataFileNameError(self._metadata_file_pattern)

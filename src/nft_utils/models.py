@@ -1,13 +1,22 @@
-from typing import Dict
+from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class NFT(BaseModel):
     image: str
-    tokenID: int
+    tokenId: int
     name: str
-    attributes: Dict = {}
+    attributes: List = []
+
+    @validator("image")
+    def image_must_be_cid(cls, v):
+        if not v.startswith("ipfs://"):
+            raise ValueError("Image CID must start with 'ipfs://'.")
+        if not len(v) == 53:
+            raise ValueError("CID must be 53 characters long.")
+
+        return v
 
 
 class Pin(BaseModel):
