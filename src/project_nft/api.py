@@ -2,11 +2,10 @@ from abc import abstractmethod
 from pathlib import Path
 from typing import List
 
-from nft_utils.models import Pin
+from project_nft.models import Pin
+
 
 # TODO: figure out how to get this into `ape`.
-
-
 class PinningAPI:
     @abstractmethod
     def get_pins(self) -> List[Pin]:

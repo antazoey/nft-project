@@ -6,20 +6,20 @@ from setuptools import find_packages, setup
 here = path.abspath(path.dirname(__file__))
 
 about = {}
-with open(path.join(here, "src", "nft_utils", "__version__.py"), encoding="utf8") as fh:
+with open(path.join(here, "src", "project_nft", "__version__.py"), encoding="utf8") as fh:
     exec(fh.read(), about)
 
 with open(path.join(here, "README.md"), "r", "utf-8") as f:
     readme = f.read()
 
 setup(
-    name="nft-utils",
+    name="project-nft",
     version=about["__version__"],
-    url="https://github.com/unparalleled-js/nft-utils",
+    url="https://github.com/unparalleled-js/project-nft",
     project_urls={
-        "Issue Tracker": "https://github.com/unparalleled-js/nft-utils/issues",
-        "Documentation": "https://github.com/unparalleled-js/nft-utils",
-        "Source Code": "https://github.com/unparalleled-js/nft-utils",
+        "Issue Tracker": "https://github.com/unparalleled-js/project-nft/issues",
+        "Documentation": "https://github.com/unparalleled-js/project-nft",
+        "Source Code": "https://github.com/unparalleled-js/project-nft",
     },
     description="A wrapper around the Pinata REST APIs",
     long_description=readme,

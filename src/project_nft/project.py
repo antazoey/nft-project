@@ -5,8 +5,10 @@ import tempfile
 from pathlib import Path
 from typing import Callable, Dict, List, Union, Optional
 
-from nft_utils.api import PinningAPI
-from nft_utils.models import NFT
+from project_nft.api import PinningAPI
+from project_nft.models import NFT
+
+ARTWORK_DIRECTORY = "artwork"
 
 
 class NFTProjectError(Exception):
@@ -20,16 +22,20 @@ class MetadataFileNameError(NFTProjectError):
     Raised when unable to craft a metadata.json file name.
     """
     def __init__(self, pattern: str):
-        super().__init__(f"Was unable to form file name from pattern {self._metadata_file_pattern}.")
+        super().__init__(f"Was unable to form file name from pattern {pattern}.")
 
 
-class Project:
+class NFTProject:
+    """
+    A class representing the active NFT project.
+    """
+
     def __init__(
         self,
         name: str,
         ipfs_client: PinningAPI,
         metadata_file_pattern: str = "{token_id}",
-        nft_data_modifier: Optional[Callable[NFT, NFT]] = None
+        nft_data_modifier: Optional[Callable[[NFT], NFT]] = None
     ) -> None:
         self._name = name
         self._ipfs = ipfs_client
@@ -37,6 +43,16 @@ class Project:
         self._nft_data_modifier = nft_data_modifier
 
     def create_nft_data(self, content_hashes: List[str]) -> List[NFT]:
+        """
+        Create a list of NFT objects from already-pinned content hashes.
+
+        Args:
+            content_hashes (List[str]): Content hashes from pinned metadata files.
+
+        Returns:
+            List[:class:`~project_nft.models.NFT`]: A list of NFT pydantic models.
+        """
+
         token_id = 0
         nft_data = []
         for cid in content_hashes:
@@ -46,6 +62,18 @@ class Project:
         return nft_data
 
     def create_nft(self, cid: str, index: int, attributes: Dict = None) -> NFT:
+        """
+        Create an NFT model object.
+
+        Args:
+            cid (str): The content IPFS hash.
+            index (int): The index or token ID.
+            attributes (Dict): A dictionary of attributes.
+
+        Returns:
+            :class:`~project_nft.models.NFT`
+        """
+
         artwork_name = f"{self._name} Number {index}"
         attributes = attributes or []
         nft = NFT(image=cid, tokenId=index, name=artwork_name, attributes=attributes)
@@ -55,7 +83,19 @@ class Project:
 
         return nft
 
-    def pin_artwork(self, artwork_path: Union[str, Path]) -> Dict:
+    def pin_artwork(self, artwork_path: Optional[Union[str, Path]] = ARTWORK_DIRECTORY) -> Dict:
+        """
+        Pin your artwork to IPFS.
+
+        Args:
+            artwork_path (Union[str, Path]): The path to the artwork file or list of files.
+              If list contains directories, they will be flattened to files. This method
+              does not pin directories.
+
+        Returns:
+            Dict: A dictionary of file names to their content IPFS hashes.
+        """
+
         artwork_path = Path(artwork_path)
         artwork_hashes = {}
         artwork_paths = (
@@ -73,11 +113,23 @@ class Project:
         return artwork_hashes
 
     def pin_metadata(self, nft_data: List[NFT]) -> str:
+        """
+        Pin NFT metadata. Provide it a list of :class:`project_nft.models.NFT` objects
+        and it will create a temporary directory containing equivalent JSON files and
+        then it will pin the whole directory to IPFS.
+
+        Args:
+            nft_data (List[:class:`project_nft.models.NFT`]): The list of NFT models.
+
+        Returns:
+            str: The content IPFS hash of the newly pinned directory.
+        """
+
         content_hash = self._ipfs.get_hash(self._name)
         if content_hash:
             return content_hash
 
-        # Create and pin metadat JSON files to IPFS
+        # Create and pin metadata JSON files to IPFS
         with tempfile.TemporaryDirectory() as temp_dir:
             owd = os.getcwd()
 
