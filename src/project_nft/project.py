@@ -34,7 +34,7 @@ class NFTProject:
         self,
         name: str,
         ipfs_client: PinningAPI,
-        metadata_file_pattern: str = "{token_id}",
+        metadata_file_pattern: str = "{token_id}.json",
         nft_data_modifier: Optional[Callable[[NFT], NFT]] = None
     ) -> None:
         self._name = name
