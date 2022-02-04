@@ -3,23 +3,15 @@ from os import path
 
 from setuptools import find_packages, setup
 
-here = path.abspath(path.dirname(__file__))
-
-about = {}
-with open(path.join(here, "src", "project_nft", "__version__.py"), encoding="utf8") as fh:
-    exec(fh.read(), about)
-
-with open(path.join(here, "README.md"), "r", "utf-8") as f:
-    readme = f.read()
-
 setup(
     name="project-nft",
-    version=about["__version__"],
-    url="https://github.com/unparalleled-js/project-nft",
+    use_scm_version=True,
+    setup_requires=["setuptools_scm"],
+    url="https://github.com/unparalleled-js/nft-project",
     project_urls={
-        "Issue Tracker": "https://github.com/unparalleled-js/project-nft/issues",
-        "Documentation": "https://github.com/unparalleled-js/project-nft",
-        "Source Code": "https://github.com/unparalleled-js/project-nft",
+        "Issue Tracker": "https://github.com/unparalleled-js/nft-project/issues",
+        "Documentation": "https://github.com/unparalleled-js/nft-project",
+        "Source Code": "https://github.com/unparalleled-js/nft-project",
     },
     description="A wrapper around the Pinata REST APIs",
     long_description=readme,

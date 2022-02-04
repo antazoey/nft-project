@@ -4,6 +4,10 @@ from pydantic import BaseModel, validator
 
 
 class NFT(BaseModel):
+    """
+    An NFT model, containing the expected token ID, image ID, name, and attributes.
+    """
+
     image: str
     tokenId: int
     name: str
@@ -20,6 +24,10 @@ class NFT(BaseModel):
 
 
 class Pin(BaseModel):
+    """
+    A model of a Pin, containing the file name and content hash.
+    """
+
     content_hash: str
     file_name: str
 

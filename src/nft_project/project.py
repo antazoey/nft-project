@@ -1,12 +1,12 @@
 import json
-import shutil
 import os
+import shutil
 import tempfile
 from pathlib import Path
-from typing import Callable, Dict, List, Union, Optional
+from typing import Callable, Dict, List, Optional, Union
 
-from project_nft.api import PinningAPI
-from project_nft.models import NFT
+from nft_project.interfaces import IPinning
+from nft_project.models import NFT
 
 ARTWORK_DIRECTORY = "artwork"
 
@@ -21,6 +21,7 @@ class MetadataFileNameError(NFTProjectError):
     """
     Raised when unable to craft a metadata.json file name.
     """
+
     def __init__(self, pattern: str):
         super().__init__(f"Was unable to form file name from pattern {pattern}.")
 
@@ -33,9 +34,9 @@ class NFTProject:
     def __init__(
         self,
         name: str,
-        ipfs_client: PinningAPI,
+        ipfs_client: IPinning,
         metadata_file_pattern: str = "{token_id}.json",
-        nft_data_modifier: Optional[Callable[[NFT], NFT]] = None
+        nft_data_modifier: Optional[Callable[[NFT], NFT]] = None,
     ) -> None:
         self._name = name
         self._ipfs = ipfs_client
@@ -71,7 +72,7 @@ class NFTProject:
             attributes (Dict): A dictionary of attributes.
 
         Returns:
-            :class:`~project_nft.models.NFT`
+            :class:`~nft_project.models.NFT`
         """
 
         artwork_name = f"{self._name} Number {index}"
@@ -83,7 +84,9 @@ class NFTProject:
 
         return nft
 
-    def pin_artwork(self, artwork_path: Optional[Union[str, Path]] = ARTWORK_DIRECTORY) -> Dict:
+    def pin_artwork(
+        self, artwork_path: Optional[Union[str, Path]] = ARTWORK_DIRECTORY
+    ) -> Dict:
         """
         Pin your artwork to IPFS.
 
@@ -114,7 +117,7 @@ class NFTProject:
 
     def pin_metadata(self, nft_data: List[NFT]) -> str:
         """
-        Pin NFT metadata. Provide it a list of :class:`project_nft.models.NFT` objects
+        Pin NFT metadata. Provide it a list of :class:`nft_project.models.NFT` objects
         and it will create a temporary directory containing equivalent JSON files and
         then it will pin the whole directory to IPFS.
 
@@ -148,7 +151,7 @@ class NFTProject:
 
                     metadata_file_path = project_path / metadata_file_name
                     metadata_file_path.write_text(json.dumps(nft.dict()))
-                
+
                 content_hash = self._ipfs.pin_file(project_path)
 
             finally:
