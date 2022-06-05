@@ -1,0 +1,28 @@
+plugins:
+  - name: solidity
+  - name: hardhat
+  - name: alchemy
+
+name: poofpoofpass
+
+dependencies:
+  - name: OpenZeppelin
+    github: OpenZeppelin/openzeppelin-contracts
+    version: 4.6.0
+
+solidity: 
+  import_remapping:
+    - "@openzeppelin=OpenZeppelin/4.6.0"
+
+ethereum:
+  default_network: mainnet-fork
+  mainnet:
+    default_provider: alchemy
+  local:
+    default_provider: hardhat
+
+deployments:
+  ethereum:
+    rinkeby: 
+    - contract_type: PoofPoof
+      address: 0x9eD05D7F0117ce69bEc01e5d96a987a2C98EF7F6

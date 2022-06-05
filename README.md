@@ -1,11 +1,27 @@
-# NFT Utilities
+![420 friendly](https://img.shields.io/badge/420-Friendly-green)
 
-Python utilities for NFT projects.
+# Poof Poof Pass
 
-## The NFT Project
+What are you waiting for? Pass the Poof Poofs.
 
-Use the ``NFT`` project class to manage your artwork and pins.
-The backend to the project is abstract and defined in the `api.py` module.
-This is so that you can use any IPFS implementation that you desire.
+## Installation
 
+Install project dependencies first. From the project directory, run:
 
+```bash
+pip install -r requirements.txt
+```
+
+Then, install the ape plugins:
+
+```bash
+ape plugins install .
+```
+
+## Tests
+
+To run the tests, do:
+
+```bash
+ape test
+```

@@ -8,7 +8,7 @@ from typing import Callable, Dict, List, Optional, Union
 from nft_project.interfaces import IPinning
 from nft_project.models import NFT
 
-ARTWORK_DIRECTORY = "artwork"
+DEFAULT_ARTWORK_DIRECTORY = "artwork"
 
 
 class NFTProjectError(Exception):
@@ -85,10 +85,11 @@ class NFTProject:
         return nft
 
     def pin_artwork(
-        self, artwork_path: Optional[Union[str, Path]] = ARTWORK_DIRECTORY
+        self, artwork_path: Optional[Union[str, Path]] = DEFAULT_ARTWORK_DIRECTORY
     ) -> Dict:
         """
         Pin your artwork to IPFS.
+        *NOTE*: Only pins if not already pinned.
 
         Args:
             artwork_path (Union[str, Path]): The path to the artwork file or list of files.
@@ -101,9 +102,7 @@ class NFTProject:
 
         artwork_path = Path(artwork_path)
         artwork_hashes = {}
-        artwork_paths = (
-            list(artwork_path.rglob("*.*")) if artwork_path.is_dir() else [artwork_path]
-        )
+        artwork_paths = list(artwork_path.rglob("*.*")) if artwork_path.is_dir() else [artwork_path]
 
         for artwork_path in artwork_paths:
             content_hash = self._ipfs.get_hash(artwork_path.name)
@@ -143,9 +142,7 @@ class NFTProject:
                 project_path.mkdir()
 
                 for nft in nft_data:
-                    metadata_file_name = self._metadata_file_pattern.format(
-                        token_id=nft.tokenId
-                    )
+                    metadata_file_name = self._metadata_file_pattern.format(token_id=nft.tokenId)
                     if not metadata_file_name:
                         raise MetadataFileNameError(self._metadata_file_pattern)
 
