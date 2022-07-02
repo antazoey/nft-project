@@ -8,7 +8,7 @@ from pinata import create_pinata
 from ape import accounts, config, networks
 from ape.api import AccountAPI
 from ape.cli import get_user_selected_account
-from aep.types import AddressType
+from ape.types import AddressType
 from ape.utils import cached_property
 from ape_accounts import KeyfileAccount
 
