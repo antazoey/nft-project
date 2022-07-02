@@ -1,7 +1,7 @@
 import ape
 import pytest
 
-from sdk import sdk as poof_sdk
+from ..sdk import sdk as poof_sdk
 
 
 @pytest.fixture(scope="session")
